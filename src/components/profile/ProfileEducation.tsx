@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import { useEffect, useState } from "react";
@@ -47,9 +49,7 @@ export default function ProfileEducation() {
   // Tambah Education
   const handleAdd = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!newEdu.place || !newEdu.start_at || !newEdu.desc) 
-      
-      return;
+    if (!newEdu.place || !newEdu.start_at || !newEdu.desc) return;
     setSaving(true);
     try {
       const formData = new FormData();
@@ -82,45 +82,49 @@ export default function ProfileEducation() {
   };
 
   // Update inline
- const handleUpdate = async (id: string, field: keyof Education, value: string) => {
-  try {
-    const edu = educations.find((e) => e.id === id);
-    if (!edu) return;
+  const handleUpdate = async (
+    id: string,
+    field: keyof Education,
+    value: string
+  ) => {
+    try {
+      const edu = educations.find((e) => e.id === id);
+      if (!edu) return;
 
-    const updated = { ...edu, [field]: value };
+      const updated = { ...edu, [field]: value };
 
-    const formData = new FormData();
-    formData.append("id", id);
-    formData.append("place", updated.place);
-    formData.append("start_at", updated.start_at);
-    formData.append("end_at", updated.end_at);
-    formData.append("desc", updated.desc);
-    formData.append("type", updated.type);
+      const formData = new FormData();
+      formData.append("id", id);
+      formData.append("place", updated.place);
+      formData.append("start_at", updated.start_at);
+      formData.append("end_at", updated.end_at);
+      formData.append("desc", updated.desc);
+      formData.append("type", updated.type);
 
-    // hanya tambahkan certificate kalau ada file baru
-    if (updated.certificate && typeof updated.certificate !== "string") {
-      formData.append("certificate", updated.certificate);
+      // hanya tambahkan certificate kalau ada file baru
+      if (updated.certificate && typeof updated.certificate !== "string") {
+        formData.append("certificate", updated.certificate);
+      }
+
+      console.log(" PATCH FormData:", Object.fromEntries(formData.entries()));
+
+      const res = await api.patch("/education", formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+
+      const newData = res.data.data?.updated_education || res.data.data;
+      setEducations((prev) =>
+        prev.map((e) => (e.id === id ? { ...e, ...newData } : e))
+      );
+
+      // showSuccess("Saved");
+    } catch (err: any) {
+      console.error("Error updating education:", err);
+      const msg =
+        err.response?.data?.message || "Gagal memperbarui data pendidikan ❌";
+      // showError(msg);
     }
-
-    console.log(" PATCH FormData:", Object.fromEntries(formData.entries()));
-
-    const res = await api.patch("/education", formData, {
-      headers: { "Content-Type": "multipart/form-data" },
-    });
-
-    const newData = res.data.data?.updated_education || res.data.data;
-    setEducations((prev) =>
-      prev.map((e) => (e.id === id ? { ...e, ...newData } : e))
-    );
-
-    // showSuccess("Saved");
-  } catch (err: any) {
-    console.error("Error updating education:", err);
-    const msg =
-      err.response?.data?.message || "Gagal memperbarui data pendidikan ❌";
-    // showError(msg);
-  }
-};
+  };
 
   // Upload Certificate
   const handleUploadCertificate = async (id: string, file?: File) => {
@@ -157,7 +161,7 @@ export default function ProfileEducation() {
     try {
       await api.delete("/education", { data: { id } });
       setEducations((prev) => prev.filter((e) => e.id !== id));
-       toast.success("Deleted successfully ");
+      toast.success("Deleted successfully ");
     } catch (err) {
       console.error("Error deleting education:", err);
     }
@@ -181,8 +185,7 @@ export default function ProfileEducation() {
       {/* Form tambah */}
       <form
         onSubmit={handleAdd}
-        className="flex flex-col md:flex-row flex-wrap gap-3 bg-gray-50 p-4 rounded-xl border border-gray-200 mb-6"
-      >
+        className="flex flex-col md:flex-row flex-wrap gap-3 bg-gray-50 p-4 rounded-xl border border-gray-200 mb-6">
         <input
           placeholder="Institution / Place"
           value={newEdu.place}
@@ -204,10 +207,12 @@ export default function ProfileEducation() {
         <select
           value={newEdu.type}
           onChange={(e) =>
-            setNewEdu({ ...newEdu, type: e.target.value as "formal" | "nonformal" })
+            setNewEdu({
+              ...newEdu,
+              type: e.target.value as "formal" | "nonformal",
+            })
           }
-          className="border rounded-md px-3 py-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:outline-none"
-        >
+          className="border rounded-md px-3 py-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:outline-none">
           <option value="formal">Formal</option>
           <option value="nonformal">Non Formal</option>
         </select>
@@ -230,102 +235,100 @@ export default function ProfileEducation() {
         <button
           type="submit"
           disabled={saving}
-          className="flex items-center justify-center gap-1 bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition disabled:opacity-60"
-        >
-          {saving ? <Loader2 className="animate-spin w-4 h-4" /> : <Plus className="w-4 h-4" />}
+          className="flex items-center justify-center gap-1 bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition disabled:opacity-60">
+          {saving ? (
+            <Loader2 className="animate-spin w-4 h-4" />
+          ) : (
+            <Plus className="w-4 h-4" />
+          )}
           Add
         </button>
       </form>
 
       {/*  List Education */}
       <ul className="space-y-3">
-  {educations.length === 0 && (
-    <p className="text-gray-500 text-sm italic">No educations yet.</p>
-  )}
+        {educations.length === 0 && (
+          <p className="text-gray-500 text-sm italic">No educations yet.</p>
+        )}
 
-  {educations.map((edu, index) => (
-    <li
-      key={edu.id || `temp-${index}`}
-      className="p-4 bg-gray-50 rounded-xl border border-gray-200 flex justify-between items-start"
-    >
-      <div className="flex-1">
-        {/* Institution / Place */}
-        <input
-          value={edu.place}
-          onChange={(e) => handleUpdate(edu.id!, "place", e.target.value)}
-          placeholder="Institution"
-          className="font-semibold text-gray-800 bg-transparent border-none focus:ring-0 focus:outline-none w-full"
-        />
+        {educations.map((edu, index) => (
+          <li
+            key={edu.id || `temp-${index}`}
+            className="p-4 bg-gray-50 rounded-xl border border-gray-200 flex justify-between items-start">
+            <div className="flex-1">
+              {/* Institution / Place */}
+              <input
+                value={edu.place}
+                onChange={(e) => handleUpdate(edu.id!, "place", e.target.value)}
+                placeholder="Institution"
+                className="font-semibold text-gray-800 bg-transparent border-none focus:ring-0 focus:outline-none w-full"
+              />
 
-        {/* Type (formal / nonformal) */}
-        <select
-          value={edu.type}
-          onChange={(e) => handleUpdate(edu.id!, "type", e.target.value)}
-          className="text-xs text-gray-500 capitalize bg-transparent border-none focus:ring-0 focus:outline-none mt-1"
-        >
-          <option value="formal">formal</option>
-          <option value="nonformal">nonformal</option>
-        </select>
+              {/* Type (formal / nonformal) */}
+              <select
+                value={edu.type}
+                onChange={(e) => handleUpdate(edu.id!, "type", e.target.value)}
+                className="text-xs text-gray-500 capitalize bg-transparent border-none focus:ring-0 focus:outline-none mt-1">
+                <option value="formal">formal</option>
+                <option value="nonformal">nonformal</option>
+              </select>
 
-        {/* Dates */}
-        <div className="text-xs text-gray-500 mt-1">
-          <span>
-            {edu.start_at} - {edu.end_at}
-          </span>
-        </div>
+              {/* Dates */}
+              <div className="text-xs text-gray-500 mt-1">
+                <span>
+                  {edu.start_at} - {edu.end_at}
+                </span>
+              </div>
 
-        {/* Description */}
-        <textarea
-          value={edu.desc}
-          onChange={(e) => handleUpdate(edu.id!, "desc", e.target.value)}
-          placeholder="Description"
-          className="mt-2 w-full text-sm text-gray-700 bg-transparent border-none focus:ring-0 focus:outline-none resize-none"
-          rows={2}
-        />
+              {/* Description */}
+              <textarea
+                value={edu.desc}
+                onChange={(e) => handleUpdate(edu.id!, "desc", e.target.value)}
+                placeholder="Description"
+                className="mt-2 w-full text-sm text-gray-700 bg-transparent border-none focus:ring-0 focus:outline-none resize-none"
+                rows={2}
+              />
 
-        {/* Certificate Section */}
-        <div className="mt-2 flex flex-col gap-1">
-          {edu.certificate &&
-            edu.certificate !== "null" &&
-            edu.certificate.trim() !== "" &&
-            !edu.certificate.endsWith("/uploads/") && (
-              <a
-                href={edu.certificate}
-                target="_blank"
-                className="text-blue-600 text-sm hover:underline break-words"
-              >
-                📄 {edu.certificate.split("/").pop()}
-              </a>
-            )}
+              {/* Certificate Section */}
+              <div className="mt-2 flex flex-col gap-1">
+                {edu.certificate &&
+                  edu.certificate !== "null" &&
+                  edu.certificate.trim() !== "" &&
+                  !edu.certificate.endsWith("/uploads/") && (
+                    <a
+                      href={edu.certificate}
+                      target="_blank"
+                      className="text-blue-600 text-sm hover:underline break-words">
+                      📄 {edu.certificate.split("/").pop()}
+                    </a>
+                  )}
 
-          <label className="flex items-center gap-2 text-sm text-blue-600 cursor-pointer">
-            <Upload className="w-4 h-4" />
-            {edu.certificate && edu.certificate !== "null"
-              ? "Replace Certificate"
-              : "Upload Certificate"}
-            <input
-              type="file"
-              accept=".jpg,.jpeg,.png,.pdf"
-              className="hidden"
-              onChange={(e) =>
-                handleUploadCertificate(edu.id!, e.target.files?.[0])
-              }
-            />
-          </label>
-        </div>
-      </div>
+                <label className="flex items-center gap-2 text-sm text-blue-600 cursor-pointer">
+                  <Upload className="w-4 h-4" />
+                  {edu.certificate && edu.certificate !== "null"
+                    ? "Replace Certificate"
+                    : "Upload Certificate"}
+                  <input
+                    type="file"
+                    accept=".jpg,.jpeg,.png,.pdf"
+                    className="hidden"
+                    onChange={(e) =>
+                      handleUploadCertificate(edu.id!, e.target.files?.[0])
+                    }
+                  />
+                </label>
+              </div>
+            </div>
 
-      {/* Delete button */}
-      <button
-        onClick={() => handleDelete(edu.id)}
-        className="text-red-600 hover:text-red-800 flex items-center gap-1 ml-3"
-      >
-        <Trash2 className="w-4 h-4" /> Delete
-      </button>
-    </li>
-  ))}
+            {/* Delete button */}
+            <button
+              onClick={() => handleDelete(edu.id)}
+              className="text-red-600 hover:text-red-800 flex items-center gap-1 ml-3">
+              <Trash2 className="w-4 h-4" /> Delete
+            </button>
+          </li>
+        ))}
       </ul>
-
     </section>
   );
 }

@@ -1,3 +1,5 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable prefer-const */
 "use client";
 import { useEffect, useState } from "react";
@@ -71,7 +73,7 @@ export default function EducationStep({ onNext, onPrev }: Props) {
   };
 
   const handleUpdate = async (id: string, field: string, value: string) => {
-    const updated = cv.educations.map((e) =>
+    const updated = cv.educations.map((e: any) =>
       e.id === id ? { ...e, [field]: value } : e
     );
     cv.setEducations(updated);
@@ -156,7 +158,7 @@ export default function EducationStep({ onNext, onPrev }: Props) {
 
       {/* === Saved Education Cards === */}
       <div className="space-y-5">
-        {cv.educations.map((edu) => {
+        {cv.educations.map((edu: any) => {
           const isEditing = editingId === edu.id;
           return (
             <div

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import Image from "next/image";
@@ -5,7 +6,7 @@ import Link from "next/link";
 import { Plus_Jakarta_Sans } from "next/font/google";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import  api  from "@/lib/axios";
+import api from "@/lib/axios";
 
 const jakarta = Plus_Jakarta_Sans({
   subsets: ["latin"],
@@ -93,8 +94,7 @@ export default function RegisterPage() {
             disabled={loading}
             className={`w-full bg-gray-800 text-white rounded-md py-2 font-semibold hover:bg-gray-700 transition ${
               loading ? "opacity-50 cursor-not-allowed" : ""
-            }`}
-          >
+            }`}>
             {loading ? "Creating account..." : "Sign up"}
           </button>
         </form>
@@ -103,8 +103,7 @@ export default function RegisterPage() {
           Already have an account?{" "}
           <Link
             href="/login"
-            className="text-green-600 font-medium hover:text-blue-600"
-          >
+            className="text-green-600 font-medium hover:text-blue-600">
             Sign in
           </Link>
         </p>

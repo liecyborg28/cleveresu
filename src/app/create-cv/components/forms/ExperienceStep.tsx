@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable prefer-const */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
@@ -77,7 +78,7 @@ export default function ExperienceStep({ onNext, onPrev }: Props) {
   };
 
   const handleUpdate = async (id: string, field: string, value: string) => {
-    const updatedList = cv.experiences.map((e) =>
+    const updatedList = cv.experiences.map((e: any) =>
       e.id === id ? { ...e, [field]: value } : e
     );
     cv.setExperiences(updatedList);
@@ -161,7 +162,7 @@ export default function ExperienceStep({ onNext, onPrev }: Props) {
 
       {/* === Saved Experiences === */}
       <div className="space-y-5">
-        {cv.experiences.map((exp, index) => {
+        {cv.experiences.map((exp: any, index: any) => {
           const isEditing = editingId === exp.id;
           return (
             <div

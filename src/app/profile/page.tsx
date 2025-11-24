@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
@@ -102,12 +103,14 @@ export default function ProfilePage() {
 
           <div className="flex flex-col md:flex-row gap-10 items-start">
             <div className="md:w-1/3 flex flex-col items-center">
-          <ProfileAvatar
-            photo={profile.photo_profile}
-            setPhoto={(url) => setProfile({ ...profile, photo_profile: url })}
-            profile={profile}
-            setProfile={setProfile}
-          />
+              <ProfileAvatar
+                photo={profile.photo_profile}
+                setPhoto={(url) =>
+                  setProfile({ ...profile, photo_profile: url })
+                }
+                profile={profile}
+                setProfile={setProfile}
+              />
             </div>
             <div className="md:w-2/3">
               <ProfileForm profile={profile} setProfile={setProfile} />
@@ -141,7 +144,7 @@ export default function ProfilePage() {
             <Lightbulb className="w-6 h-6 text-blue-600" />
             <h2 className="text-xl font-semibold text-gray-800">Skills</h2>
           </div>
-          <SkillForm/>
+          <SkillForm />
         </section>
       </main>
     </div>

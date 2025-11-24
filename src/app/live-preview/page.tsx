@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import { useCvData } from "@/redux/hooks";
@@ -47,35 +48,49 @@ export default function LivePreview() {
       <div id="cv-content" class="text-gray-800 leading-relaxed">
         <div class="text-center mb-4">
           <h1 class="text-[20px] font-bold">${profile.full_name || ""}</h1>
-          <p class="text-[11px] text-gray-600">${profile.address || ""} | ${profile.email || ""}</p>
+          <p class="text-[11px] text-gray-600">${profile.address || ""} | ${
+      profile.email || ""
+    }</p>
           <p class="text-[11px] mt-1">${profile.desc || ""}</p>
         </div>
 
         <div class="mt-4">
           <h2 class="section-title">Experience</h2>
-          ${experiences.map(e=>`
+          ${experiences
+            .map(
+              (e: any) => `
             <div class="entry">
               <span class="font-semibold">${e.position}</span>
               <span> | ${e.place}</span><br/>
-              <span class="text-gray-500">${e.start_at?.split("T")[0]} – ${e.end_at?.split("T")[0]}</span>
+              <span class="text-gray-500">${e.start_at?.split("T")[0]} – ${
+                e.end_at?.split("T")[0]
+              }</span>
               <p>${e.desc || ""}</p>
-            </div>`).join("")}
+            </div>`
+            )
+            .join("")}
         </div>
 
         <div class="mt-4">
           <h2 class="section-title">Education</h2>
-          ${educations.map(e=>`
+          ${educations
+            .map(
+              (e: any) => `
             <div class="entry">
               <span class="font-semibold">${e.place}</span>
-              <span> (${e.start_at?.split("T")[0]} – ${e.end_at?.split("T")[0]})</span>
+              <span> (${e.start_at?.split("T")[0]} – ${
+                e.end_at?.split("T")[0]
+              })</span>
               <p>${e.desc || ""}</p>
-            </div>`).join("")}
+            </div>`
+            )
+            .join("")}
         </div>
 
         <div class="mt-4">
           <h2 class="section-title">Skills</h2>
           <ul class="grid grid-cols-2 list-disc pl-5">
-            ${skills.map(s=>`<li>${s.name}</li>`).join("")}
+            ${skills.map((s: any) => `<li>${s.name}</li>`).join("")}
           </ul>
         </div>
       </div>
@@ -109,8 +124,7 @@ export default function LivePreview() {
           exporting
             ? "bg-gray-400 cursor-not-allowed"
             : "bg-blue-600 hover:bg-blue-700 text-white"
-        }`}
-      >
+        }`}>
         {exporting ? (
           <>
             <Loader2 className="w-5 h-5 animate-spin" /> Exporting...

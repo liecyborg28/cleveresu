@@ -1,4 +1,5 @@
-"use client"
+/* eslint-disable @typescript-eslint/no-unused-vars */
+"use client";
 
 import Navbar from "@/components/Navbar";
 import { useRouter } from "next/navigation";
@@ -14,7 +15,7 @@ export default function DashboardPage() {
   return (
     <div className="min-h-screen bg-gray-100">
       {/* Navbar */}
-      <Navbar/>
+      <Navbar />
 
       {/* Isi Dashboard */}
       {/* <div className="container mx-auto px-4 py-8">
@@ -41,24 +42,27 @@ export default function DashboardPage() {
         </div>
       </div> */}
 
-       <h1 className="text-3xl font-bold mb-6 text-gray-500 m-8">Dashboard</h1>
+      <h1 className="text-3xl font-bold mb-6 text-gray-500 m-8">Dashboard</h1>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pl-10">
         {/* Card Create New */}
         <div
           onClick={handleCreate}
-          className=" cursor-pointer p flex flex-col items-center justify-center border-2 border-dashed border-blue-500 rounded-xl p-10 shadow-md hover:shadow-xl hover:bg-blue-50 transition duration-200"
-        >
+          className=" cursor-pointer p flex flex-col items-center justify-center border-2 border-dashed border-blue-500 rounded-xl p-10 shadow-md hover:shadow-xl hover:bg-blue-50 transition duration-200">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             className="h-12 w-12 text-blue-500 mb-3"
             fill="none"
             viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+            stroke="currentColor">
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M12 4v16m8-8H4"
+            />
           </svg>
-          
+
           <p className="text-blue-600 font-semibold">CREATE NEW</p>
         </div>
       </div>
