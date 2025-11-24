@@ -1,0 +1,71 @@
+@import "tailwindcss";
+
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+}
+
+/* Kalau kamu pakai Tailwind v4 @theme inline */
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+
+  /* PENTING:
+     Agar class Tailwind 'font-sans' (kalau kepakai di komponen)
+     tetap menunjuk ke Plus Jakarta Sans, mapping-kan ke var(--font-jakarta)
+     yang kita buat dari next/font di layout.tsx
+  */
+  --font-sans: var(--font-jakarta);
+
+  /* Biarkan mono apa adanya, kalau tidak dipakai bisa diabaikan */
+  --font-mono: var(--font-geist-mono);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+  }
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  
+     /* font-family: Arial, Helvetica, sans-serif;
+     (baris ini yang bikin nimpah Jakarta) */
+  
+}
+@layer components {
+  .editable-field {
+    @apply w-full bg-white border border-gray-200 rounded-lg px-3 py-2 text-gray-800 
+    focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200
+    transition text-sm md:text-base;
+  }
+
+  .editable-wrapper {
+    @apply relative flex items-center w-full;
+  }
+
+  .edit-icon {
+    @apply absolute right-3 text-gray-400 hover:text-blue-500 transition cursor-pointer;
+  }
+
+  .btn-primary {
+    @apply bg-blue-600 text-white px-5 py-2 rounded-lg font-semibold hover:bg-blue-700 active:scale-[0.98] transition;
+  }
+
+  .btn-secondary {
+    @apply bg-gray-200 text-gray-700 px-5 py-2 rounded-lg font-semibold hover:bg-gray-300 active:scale-[0.98] transition;
+  }
+  .edit-mode .input-clean {
+  @apply border-blue-300 bg-white;
+}
+
+  .input-clean {
+    @apply border border-gray-300 rounded-lg px-4 py-3 text-gray-800
+    bg-white focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-400
+    hover:border-blue-300 transition placeholder:text-gray-400;
+  }
+}
+
