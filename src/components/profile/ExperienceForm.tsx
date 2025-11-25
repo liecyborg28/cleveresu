@@ -7,6 +7,8 @@ import { Plus, Trash2, Loader2, Upload } from "lucide-react";
 import api from "@/lib/axios";
 import toast from "react-hot-toast";
 
+
+
 function formatDate(isoString: string): string {
   const date = new Date(isoString);
 
@@ -21,6 +23,7 @@ function formatDate(isoString: string): string {
 
   return `${day}/${month}/${year}`;
 }
+
 
 type Experience = {
   id?: string;
@@ -101,6 +104,7 @@ export default function ExperienceSection() {
         desc: "",
       });
       setCertificateFile(null);
+     
     } catch (err) {
       console.error("Error adding experience:", err);
     } finally {
@@ -109,41 +113,38 @@ export default function ExperienceSection() {
   };
 
   // Update inline
-  const handleUpdate = async (
-    id: string,
-    field: keyof Experience,
-    value: string
-  ) => {
-    try {
-      const exp = experiences.find((e) => e.id === id);
-      if (!exp) return;
+ const handleUpdate = async (id: string, field: keyof Experience, value: string) => {
+  try {
+    const exp = experiences.find((e) => e.id === id);
+    if (!exp) return;
 
-      const updated = { ...exp, [field]: value };
+    const updated = { ...exp, [field]: value };
 
-      const formData = new FormData();
-      formData.append("id", id);
-      formData.append("place", updated.place);
-      formData.append("position", updated.position);
-      formData.append("start_at", toISO(updated.start_at) || "");
-      formData.append("end_at", toISO(updated.end_at || "") || "");
-      formData.append("desc", updated.desc || "");
+    const formData = new FormData();
+    formData.append("id", id);
+    formData.append("place", updated.place);
+    formData.append("position", updated.position);
+    formData.append("start_at", toISO(updated.start_at) || "");
+    formData.append("end_at", toISO(updated.end_at || "") || "");
+    formData.append("desc", updated.desc || "");
 
-      const res = await api.patch("/experience", formData, {
-        headers: { "Content-Type": "multipart/form-data" },
-      });
+    const res = await api.patch("/experience", formData, {
+      headers: { "Content-Type": "multipart/form-data" },
+    });
 
-      const newData = res.data.data?.updated_experience || res.data.data;
+    const newData = res.data.data?.updated_experience || res.data.data;
 
-      setExperiences((prev) =>
-        prev.map((e) => (e.id === id ? { ...e, ...newData } : e))
-      );
+    setExperiences((prev) =>
+      prev.map((e) => (e.id === id ? { ...e, ...newData } : e))
+    );
 
-      toast.success("Success");
-    } catch (err: any) {
-      console.error("Error updating experience:", err);
-      toast.error("Failed to update");
-    }
-  };
+    toast.success("Success");
+  } catch (err: any) {
+    console.error("Error updating experience:", err);
+    toast.error("Failed to update");
+  }
+};
+
 
   // Upload Certificate
   const handleUploadCertificate = async (id: string, file?: File) => {
@@ -177,16 +178,17 @@ export default function ExperienceSection() {
 
   //  Delete (pakai body.id)
   const handleDelete = async (id?: string) => {
-    if (!id) return;
-    try {
-      await api.delete("/experience", { data: { id } });
-      setExperiences((prev) => prev.filter((e) => e.id !== id));
-      toast.success("Deleted successfully ");
-    } catch (err) {
-      console.error("Error deleting experience:", err);
-      toast.error("Failed to delete ");
-    }
-  };
+  if (!id) return;
+  try {
+    await api.delete("/experience", { data: { id } });
+    setExperiences((prev) => prev.filter((e) => e.id !== id));
+    toast.success("Deleted successfully ");
+  } catch (err) {
+    console.error("Error deleting experience:", err);
+    toast.error("Failed to delete ");
+  }
+};
+
 
   if (loading) {
     return (
@@ -206,7 +208,8 @@ export default function ExperienceSection() {
       {/*  Form tambah */}
       <form
         onSubmit={handleAdd}
-        className="flex flex-col md:flex-row flex-wrap gap-3 bg-gray-50 p-4 rounded-xl border border-gray-200 mb-6">
+        className="flex flex-col md:flex-row flex-wrap gap-3 bg-gray-50 p-4 rounded-xl border border-gray-200 mb-6"
+      >
         <input
           placeholder="Company / Place"
           value={newExp.place}
@@ -250,12 +253,9 @@ export default function ExperienceSection() {
         <button
           type="submit"
           disabled={saving}
-          className="flex items-center justify-center gap-1 bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition disabled:opacity-60">
-          {saving ? (
-            <Loader2 className="animate-spin w-4 h-4" />
-          ) : (
-            <Plus className="w-4 h-4" />
-          )}
+          className="flex items-center justify-center gap-1 bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition disabled:opacity-60"
+        >
+          {saving ? <Loader2 className="animate-spin w-4 h-4" /> : <Plus className="w-4 h-4" />}
           Add
         </button>
       </form>
@@ -268,7 +268,8 @@ export default function ExperienceSection() {
         {experiences.map((exp, i) => (
           <li
             key={exp.id || `temp-${i}`}
-            className="p-4 bg-gray-50 rounded-xl border border-gray-200 flex justify-between items-start">
+            className="p-4 bg-gray-50 rounded-xl border border-gray-200 flex justify-between items-start"
+          >
             <div className="flex-1">
               <input
                 value={exp.place}
@@ -277,9 +278,7 @@ export default function ExperienceSection() {
               />
               <input
                 value={exp.position}
-                onChange={(e) =>
-                  handleUpdate(exp.id!, "position", e.target.value)
-                }
+                onChange={(e) => handleUpdate(exp.id!, "position", e.target.value)}
                 className="text-sm text-gray-600 bg-transparent border-none focus:ring-0 focus:outline-none w-full "
               />
               <p className="text-xs text-gray-500 mb-1">
@@ -302,7 +301,8 @@ export default function ExperienceSection() {
                     <a
                       href={exp.certificate}
                       target="_blank"
-                      className="text-blue-600 text-sm hover:underline break-words">
+                      className="text-blue-600 text-sm hover:underline break-words"
+                    >
                       - {exp.certificate.split("/").pop()}
                     </a>
                   )}
@@ -324,7 +324,8 @@ export default function ExperienceSection() {
             </div>
             <button
               onClick={() => handleDelete(exp.id)}
-              className="text-red-600 hover:text-red-800 flex items-center gap-1 ml-3">
+              className="text-red-600 hover:text-red-800 flex items-center gap-1 ml-3"
+            >
               <Trash2 className="w-4 h-4" /> Delete
             </button>
           </li>

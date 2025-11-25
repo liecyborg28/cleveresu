@@ -1,15 +1,18 @@
-"use client";
-
-import rasterizeHTML from "rasterizehtml";
-import jsPDF from "jspdf";
-
 export async function exportCvToPdf(
   filename = "Cleveresu_CV.pdf",
   iframeSelector = "iframe"
 ) {
+  // ---  Cegah error saat SSR ---
+  if (typeof window === "undefined") return;
+
+  // ---  Dynamic import agar tidak dijalankan saat SSR ---
+  const { default: rasterizeHTML } = await import("rasterizehtml");
+  const { default: jsPDF } = await import("jspdf");
+
   const iframe = document.querySelector(
     iframeSelector
   ) as HTMLIFrameElement | null;
+
   if (!iframe) throw new Error("Iframe not found");
 
   const iframeDoc = iframe.contentDocument;

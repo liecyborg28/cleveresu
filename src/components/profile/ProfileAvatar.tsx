@@ -1,4 +1,3 @@
-/* eslint-disable @next/next/no-img-element */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 import { useState } from "react";
@@ -65,7 +64,7 @@ export default function ProfileAvatar({
         });
       }
     } catch (err: any) {
-      console.error(" Upload gagal:", err.response?.data || err.message);
+      console.error(" Upload gagal karena:", err.response?.data || err.message);
     } finally {
       setUploading(false);
     }

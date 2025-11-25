@@ -1,36 +1,34 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 📝 Cleveresu — AI Powered CV Builder
 
-## Getting Started
+Cleveresu adalah aplikasi pembuat CV modern yang membantu pengguna membuat **CV ATS-Friendly** secara mudah dan cepat. Pengguna cukup mengisi data melalui form, dan sistem akan menampilkan **live preview** CV dalam format HTML yang siap diekspor ke PDF. Aplikasi ini juga menyediakan fitur **AI Content Generator** untuk mendukung penulisan experience, summary, dan skill dengan lebih profesional.
 
-First, run the development server:
+---
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## 📸 Screenshot
+<img width="1904" height="904" alt="cleveresu" src="https://github.com/user-attachments/assets/a3e1a53f-01e7-4c15-90bb-b069cfda50f2" />
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
-## Learn More
+---
 
-To learn more about Next.js, take a look at the following resources:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## ✨ Features
+- 🔹 Live Preview CV (HTML + Styling)
+- 🔹 AI Content Generator (Summary, Experience, Skills)
+- 🔹 Inline Edit (dengan debounce agar tidak update per karakter)
+- 🔹 Dashboard & Profile Management
+- 🔹 Menyimpan data ke database (NeonDB via Prisma)
+- 🔹 Export CV ke PDF
+- 🔹 Responsive UI dengan animasi halus (Framer Motion)
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+---
 
-## Deploy on Vercel
+## 🧰 Tech Stack
+**Frontend:** React, Redux Toolkit, Tailwind, ShadCN UI, Framer Motion  
+**Backend:** Express.js, Prisma ORM  
+**Database:** NeonDB (PostgreSQL)  
+**Tools:** Axios, Debounce, PDF Exporter, Vercel (FE), Railway/Render (BE)
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+---
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.

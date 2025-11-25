@@ -4,6 +4,7 @@
 import { useState } from "react";
 import { Pencil, Check } from "lucide-react";
 import api from "@/lib/axios";
+import toast from "react-hot-toast";
 // import { showSuccess, showError } from "@/lib/toastHelper";
 
 type Profile = {
@@ -33,45 +34,36 @@ export default function ProfileForm({ profile, setProfile }: Props) {
     setTempValue(profile[field as keyof Profile] || "");
   };
 
-  // 💾 Save field update safely
-  const handleSave = async (field: string) => {
-    setLoading(true);
-    try {
-      const token = localStorage.getItem("token");
+ 
+const handleSave = async (field: string) => {
+  setLoading(true);
+  try {
+    const token = localStorage.getItem("token");
+    if (!token) return toast.error("Unauthorized");
 
-      // Pastikan hanya update field tertentu, tapi kirim semua field agar tidak null
-      const payload: any = {
-        full_name: profile.full_name || "",
-        address: profile.address || "",
-        gender: profile.gender || "",
-        desc: profile.desc || "",
-        birthdate:
-          profile.birthdate && !isNaN(Date.parse(profile.birthdate))
-            ? new Date(profile.birthdate).toISOString()
-            : null,
-      };
+    let fixValue: any = tempValue;
 
-      // Update field yang sedang diedit dengan nilai baru
-      payload[field] = tempValue;
-
-      const res = await api.patch("/profile", payload, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-
-      if (res.status === 200) {
-        setProfile((prev) => ({ ...prev, [field]: tempValue }));
-        // showSuccess("Profile updated successfully ");
-      } else {
-        // showError("Failed to update profile");
-      }
-    } catch (err) {
-      console.error("Error updating profile:", err);
-      // showError("Failed to save");
-    } finally {
-      setEditingField(null);
-      setLoading(false);
+    // ✅ samain dengan ProfileStep
+    if (field === "birthdate") {
+      fixValue = tempValue ? new Date(tempValue).toISOString() : null;
     }
-  };
+
+    await api.patch("/profile", { [field]: fixValue }, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+
+    setProfile((prev) => ({ ...prev, [field]: tempValue }));
+    toast.success("Saved");
+  } catch (err: any) {
+    console.error("Error updating profile:", err);
+    toast.error(err.response?.data?.message || "Update failed");
+  } finally {
+    setEditingField(null);
+    setLoading(false);
+  }
+};
+
+
 
   return (
     <div className="space-y-5">
