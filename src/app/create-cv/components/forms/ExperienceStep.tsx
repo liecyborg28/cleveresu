@@ -1,6 +1,4 @@
-/* eslint-disable react-hooks/exhaustive-deps */
-/* eslint-disable prefer-const */
-/* eslint-disable @typescript-eslint/no-explicit-any */
+
 "use client";
 import { useEffect, useState } from "react";
 import { useCvData } from "@/redux/hooks";
@@ -44,11 +42,8 @@ export default function ExperienceStep({ onNext, onPrev }: Props) {
 
     setSaving(true);
     try {
-      let start_at = newExp.start_at;
-      let end_at = newExp.end_at;
-
-      newExp.start_at = new Date(start_at).toISOString();
-      newExp.end_at = new Date(end_at).toISOString();
+      newExp.start_at = new Date(newExp.start_at).toISOString();
+      newExp.end_at = new Date(newExp.end_at).toISOString();
 
       const res = await api.post("/experience", newExp);
       const newData = res.data?.data;
@@ -56,7 +51,6 @@ export default function ExperienceStep({ onNext, onPrev }: Props) {
       if (newData?.id) {
         cv.addExperience(newData);
       } else {
-        // fallback refetch kalau backend gak return objek lengkap
         const refreshed = await api.get("/experience");
         cv.setExperiences(refreshed.data.data || []);
       }
@@ -69,8 +63,7 @@ export default function ExperienceStep({ onNext, onPrev }: Props) {
         desc: "",
       });
       toast.success("Added new experience");
-    } catch (err: any) {
-      console.error("Error adding experience:", err.response?.data || err);
+    } catch {
       toast.error("Failed to add experience");
     } finally {
       setSaving(false);
@@ -78,7 +71,7 @@ export default function ExperienceStep({ onNext, onPrev }: Props) {
   };
 
   const handleUpdate = async (id: string, field: string, value: string) => {
-    const updatedList = cv.experiences.map((e: any) =>
+    const updatedList = cv.experiences.map((e) =>
       e.id === id ? { ...e, [field]: value } : e
     );
     cv.setExperiences(updatedList);
@@ -113,47 +106,79 @@ export default function ExperienceStep({ onNext, onPrev }: Props) {
         Work <span className="text-blue-600">Experience</span>
       </h1>
       <p className="text-gray-500 mb-8 text-sm">
-        Manage your work experience. Tap the{" "}
-        <Pencil className="inline w-4 h-4 mx-1 text-blue-500" /> icon to edit.
+        Manage your work experience. Tap{" "}
+        <Pencil className="inline w-4 h-4 mx-1 text-blue-500" /> to edit.
       </p>
 
       {/* === Add New Experience === */}
       <form
         onSubmit={handleAdd}
-        className="grid gap-4 mb-8 border-2 border-gray-300 bg-gray-50 rounded-xl p-5">
+        className="grid gap-4 mb-8 border-2 border-gray-300 bg-gray-50 rounded-xl p-5"
+      >
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <input
-            placeholder="Company / Place"
-            value={newExp.place}
-            onChange={(e) => setNewExp({ ...newExp, place: e.target.value })}
+          <div className="flex flex-col">
+            <label className="text-sm font-medium text-gray-600 mb-1">
+              Company / Place
+            </label>
+            <input
+              value={newExp.place}
+              onChange={(e) => setNewExp({ ...newExp, place: e.target.value })}
+              className="input-clean bg-white"
+            />
+          </div>
+
+          <div className="flex flex-col">
+            <label className="text-sm font-medium text-gray-600 mb-1">
+              Position
+            </label>
+            <input
+              value={newExp.position}
+              onChange={(e) =>
+                setNewExp({ ...newExp, position: e.target.value })
+              }
+              className="input-clean bg-white"
+            />
+          </div>
+
+          <div className="flex flex-col">
+            <label className="text-sm font-medium text-gray-600 mb-1">
+              Start Date
+            </label>
+            <input
+              type="date"
+              value={newExp.start_at}
+              onChange={(e) =>
+                setNewExp({ ...newExp, start_at: e.target.value })
+              }
+              className="input-clean bg-white"
+            />
+          </div>
+
+          <div className="flex flex-col">
+            <label className="text-sm font-medium text-gray-600 mb-1">
+              End Date
+            </label>
+            <input
+              type="date"
+              value={newExp.end_at}
+              onChange={(e) => setNewExp({ ...newExp, end_at: e.target.value })}
+              className="input-clean bg-white"
+            />
+          </div>
+        </div>
+
+        <div className="flex flex-col md:col-span-2">
+          <label className="text-sm font-medium text-gray-600 mb-1">
+            Description
+          </label>
+          <textarea
+            value={newExp.desc}
+            onChange={(e) => setNewExp({ ...newExp, desc: e.target.value })}
             className="input-clean bg-white"
-          />
-          <input
-            placeholder="Position"
-            value={newExp.position}
-            onChange={(e) => setNewExp({ ...newExp, position: e.target.value })}
-            className="input-clean bg-white"
-          />
-          <input
-            type="date"
-            value={newExp.start_at}
-            onChange={(e) => setNewExp({ ...newExp, start_at: e.target.value })}
-            className="input-clean bg-white"
-          />
-          <input
-            type="date"
-            value={newExp.end_at}
-            onChange={(e) => setNewExp({ ...newExp, end_at: e.target.value })}
-            className="input-clean bg-white"
+            rows={3}
           />
         </div>
-        <textarea
-          placeholder="Description"
-          value={newExp.desc}
-          onChange={(e) => setNewExp({ ...newExp, desc: e.target.value })}
-          className="input-clean bg-white"
-          rows={3}
-        />
+
         <button type="submit" disabled={saving} className="btn-primary w-fit">
           <Plus className="inline w-4 h-4 mr-1" />
           {saving ? "Saving..." : "Add Experience"}
@@ -162,7 +187,7 @@ export default function ExperienceStep({ onNext, onPrev }: Props) {
 
       {/* === Saved Experiences === */}
       <div className="space-y-5">
-        {cv.experiences.map((exp: any, index: any) => {
+        {cv.experiences.map((exp, index) => {
           const isEditing = editingId === exp.id;
           return (
             <div
@@ -171,7 +196,8 @@ export default function ExperienceStep({ onNext, onPrev }: Props) {
                 isEditing
                   ? "border-blue-400 bg-blue-50"
                   : "border-gray-200 bg-white hover:shadow-sm"
-              }`}>
+              }`}
+            >
               <div className="flex items-center justify-between mb-3">
                 <div>
                   <p className="text-base font-semibold text-gray-800">
@@ -183,7 +209,7 @@ export default function ExperienceStep({ onNext, onPrev }: Props) {
                   type="button"
                   onClick={() => setEditingId(isEditing ? null : exp.id!)}
                   className="p-2 rounded-full hover:bg-gray-100 active:scale-95 transition"
-                  title={isEditing ? "Save" : "Edit"}>
+                >
                   {isEditing ? (
                     <Check className="w-5 h-5 text-blue-600" />
                   ) : (
@@ -191,35 +217,56 @@ export default function ExperienceStep({ onNext, onPrev }: Props) {
                   )}
                 </button>
               </div>
-              {/* Editable Fields */}
+
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <input
+                <div className="flex flex-col">
+                  <label className="text-sm font-medium text-gray-600 mb-1">
+                    Company
+                  </label>
+                  <input
+                    disabled={!isEditing}
+                    value={exp.place}
+                    onChange={(e) =>
+                      handleUpdate(exp.id!, "place", e.target.value)
+                    }
+                    className="input-clean disabled:bg-transparent disabled:text-gray-800"
+                  />
+                </div>
+
+                <div className="flex flex-col">
+                  <label className="text-sm font-medium text-gray-600 mb-1">
+                    Position
+                  </label>
+                  <input
+                    disabled={!isEditing}
+                    value={exp.position}
+                    onChange={(e) =>
+                      handleUpdate(exp.id!, "position", e.target.value)
+                    }
+                    className="input-clean disabled:bg-transparent disabled:text-gray-800"
+                  />
+                </div>
+              </div>
+
+              <div className="flex flex-col mt-3">
+                <label className="text-sm font-medium text-gray-600 mb-1">
+                  Description
+                </label>
+                <textarea
                   disabled={!isEditing}
-                  value={exp.place}
+                  value={exp.desc || ""}
                   onChange={(e) =>
-                    handleUpdate(exp.id!, "place", e.target.value)
+                    handleUpdate(exp.id!, "desc", e.target.value)
                   }
-                  className="input-clean disabled:bg-transparent disabled:text-gray-800"
-                />
-                <input
-                  disabled={!isEditing}
-                  value={exp.position}
-                  onChange={(e) =>
-                    handleUpdate(exp.id!, "position", e.target.value)
-                  }
-                  className="input-clean disabled:bg-transparent disabled:text-gray-800"
+                  className="input-clean disabled:bg-transparent w-full"
+                  rows={2}
                 />
               </div>
-              <textarea
-                disabled={!isEditing}
-                value={exp.desc || ""}
-                onChange={(e) => handleUpdate(exp.id!, "desc", e.target.value)}
-                className="input-clean mt-3 disabled:bg-transparent w-full"
-                rows={2}
-              />
+
               <button
                 onClick={() => handleDelete(exp.id)}
-                className="text-red-600 text-sm flex items-center gap-1 mt-3 hover:text-red-700">
+                className="text-red-600 text-sm flex items-center gap-1 mt-3 hover:text-red-700"
+              >
                 <Trash2 className="w-4 h-4" /> Delete
               </button>
             </div>

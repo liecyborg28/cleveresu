@@ -1,5 +1,3 @@
-/* eslint-disable react-hooks/exhaustive-deps */
-/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 import { useEffect, useState } from "react";
 import { useCvData } from "@/redux/hooks";
@@ -44,17 +42,11 @@ export default function SkillStep({ onNext, onPrev }: Props) {
       const newData = res.data?.data;
 
       if (newData?.id) {
-        cv.addSkill(res.data.data);
+        cv.addSkill(newData);
       } else {
         const refreshed = await api.get("/skill");
         cv.setSkills(refreshed.data.data || []);
       }
-
-      setNewSkill({
-        name: "",
-        type: "",
-        desc: "",
-      });
 
       toast.success("Skill added successfully");
       setNewSkill({ name: "", type: "technical", desc: "" });
@@ -66,7 +58,7 @@ export default function SkillStep({ onNext, onPrev }: Props) {
   };
 
   const handleUpdate = async (id: string, field: string, value: string) => {
-    const updated = cv.skills.map((s: any) =>
+    const updated = cv.skills.map((s) =>
       s.id === id ? { ...s, [field]: value } : s
     );
     cv.setSkills(updated);
@@ -101,36 +93,60 @@ export default function SkillStep({ onNext, onPrev }: Props) {
         Your <span className="text-blue-600">Skills</span>
       </h1>
       <p className="text-gray-500 mb-8 text-sm">
-        Add and manage your professional or personal skills. Tap{" "}
+        Add and manage your skills. Tap{" "}
         <Pencil className="inline w-4 h-4 mx-1 text-blue-500" /> to edit.
       </p>
 
       {/* === Add New Skill Form === */}
       <form
         onSubmit={handleAdd}
-        className="grid gap-4 mb-8 border-2 border border-gray-300 bg-gray-50 rounded-xl p-5">
+        className="grid gap-4 mb-8 border-2 border-gray-300 bg-gray-50 rounded-xl p-5"
+      >
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <input
-            placeholder="Skill Name"
-            value={newSkill.name}
-            onChange={(e) => setNewSkill({ ...newSkill, name: e.target.value })}
-            className="input-clean bg-white"
-          />
-          <select
-            value={newSkill.type}
-            onChange={(e) => setNewSkill({ ...newSkill, type: e.target.value })}
-            className="input-clean bg-white">
-            <option value="technical">Technical</option>
-            <option value="softskill">Soft Skill</option>
-          </select>
+          <div className="flex flex-col">
+            <label className="text-sm font-medium text-gray-600 mb-1">
+              Skill Name
+            </label>
+            <input
+              value={newSkill.name}
+              onChange={(e) =>
+                setNewSkill({ ...newSkill, name: e.target.value })
+              }
+              className="input-clean bg-white"
+            />
+          </div>
+
+          <div className="flex flex-col">
+            <label className="text-sm font-medium text-gray-600 mb-1">
+              Type
+            </label>
+            <select
+              value={newSkill.type}
+              onChange={(e) =>
+                setNewSkill({ ...newSkill, type: e.target.value })
+              }
+              className="input-clean bg-white"
+            >
+              <option value="technical">Technical</option>
+              <option value="softskill">Soft Skill</option>
+            </select>
+          </div>
         </div>
-        <textarea
-          placeholder="Description"
-          value={newSkill.desc}
-          onChange={(e) => setNewSkill({ ...newSkill, desc: e.target.value })}
-          className="input-clean bg-white w-full"
-          rows={3}
-        />
+
+        <div className="flex flex-col md:col-span-2">
+          <label className="text-sm font-medium text-gray-600 mb-1">
+            Description
+          </label>
+          <textarea
+            value={newSkill.desc}
+            onChange={(e) =>
+              setNewSkill({ ...newSkill, desc: e.target.value })
+            }
+            className="input-clean bg-white"
+            rows={3}
+          />
+        </div>
+
         <button type="submit" disabled={adding} className="btn-primary w-fit">
           <Plus className="inline w-4 h-4 mr-1" />
           {adding ? "Saving..." : "Add Skill"}
@@ -139,7 +155,7 @@ export default function SkillStep({ onNext, onPrev }: Props) {
 
       {/* === Saved Skills === */}
       <div className="space-y-5">
-        {cv.skills.map((skill: any) => {
+        {cv.skills.map((skill) => {
           const isEditing = editingId === skill.id;
           return (
             <div
@@ -148,15 +164,16 @@ export default function SkillStep({ onNext, onPrev }: Props) {
                 isEditing
                   ? "border-blue-400 bg-blue-50"
                   : "border-gray-200 bg-white hover:shadow-sm"
-              }`}>
-              {/* Header Bar */}
+              }`}
+            >
               <div className="flex justify-between items-center mb-3">
                 <h3 className="font-semibold text-gray-800">
                   {skill.name || "Unnamed Skill"}
                 </h3>
                 <button
                   onClick={() => setEditingId(isEditing ? null : skill.id!)}
-                  className="p-2 rounded-full hover:bg-gray-100 active:scale-95 transition">
+                  className="p-2 rounded-full hover:bg-gray-100 active:scale-95 transition"
+                >
                   {isEditing ? (
                     <Check className="w-5 h-5 text-blue-600" />
                   ) : (
@@ -165,42 +182,58 @@ export default function SkillStep({ onNext, onPrev }: Props) {
                 </button>
               </div>
 
-              {/* Editable Fields */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <input
-                  disabled={!isEditing}
-                  value={skill.name}
-                  onChange={(e) =>
-                    handleUpdate(skill.id!, "name", e.target.value)
-                  }
-                  className="input-clean disabled:bg-transparent"
-                />
-                <select
-                  disabled={!isEditing}
-                  value={skill.type}
-                  onChange={(e) =>
-                    handleUpdate(skill.id!, "type", e.target.value)
-                  }
-                  className="input-clean disabled:bg-transparent">
-                  <option value="technical">Technical</option>
-                  <option value="softskill">Soft Skill</option>
-                </select>
+                <div className="flex flex-col">
+                  <label className="text-sm font-medium text-gray-600 mb-1">
+                    Skill Name
+                  </label>
+                  <input
+                    disabled={!isEditing}
+                    value={skill.name}
+                    onChange={(e) =>
+                      handleUpdate(skill.id!, "name", e.target.value)
+                    }
+                    className="input-clean disabled:bg-transparent"
+                  />
+                </div>
+
+                <div className="flex flex-col">
+                  <label className="text-sm font-medium text-gray-600 mb-1">
+                    Type
+                  </label>
+                  <select
+                    disabled={!isEditing}
+                    value={skill.type}
+                    onChange={(e) =>
+                      handleUpdate(skill.id!, "type", e.target.value)
+                    }
+                    className="input-clean disabled:bg-transparent"
+                  >
+                    <option value="technical">Technical</option>
+                    <option value="softskill">Soft Skill</option>
+                  </select>
+                </div>
               </div>
 
-              <textarea
-                disabled={!isEditing}
-                value={skill.desc || ""}
-                onChange={(e) =>
-                  handleUpdate(skill.id!, "desc", e.target.value)
-                }
-                className="input-clean mt-3 disabled:bg-transparent w-full"
-                rows={2}
-                placeholder="Description"
-              />
+              <div className="flex flex-col mt-3">
+                <label className="text-sm font-medium text-gray-600 mb-1">
+                  Description
+                </label>
+                <textarea
+                  disabled={!isEditing}
+                  value={skill.desc || ""}
+                  onChange={(e) =>
+                    handleUpdate(skill.id!, "desc", e.target.value)
+                  }
+                  className="input-clean disabled:bg-transparent w-full"
+                  rows={2}
+                />
+              </div>
 
               <button
                 onClick={() => handleDelete(skill.id)}
-                className="text-red-600 text-sm flex items-center gap-1 mt-3 hover:text-red-700">
+                className="text-red-600 text-sm flex items-center gap-1 mt-3 hover:text-red-700"
+              >
                 <Trash2 className="w-4 h-4" /> Delete
               </button>
             </div>
@@ -208,14 +241,13 @@ export default function SkillStep({ onNext, onPrev }: Props) {
         })}
       </div>
 
-      {/* === Navigation Buttons === */}
       <div className="flex justify-between mt-10">
         {onPrev && (
           <button onClick={onPrev} className="btn-secondary">
             ← Back
           </button>
         )}
-        <button onClick={onNext} className="btn-primary">
+        <button  className="btn-secondary">
           Finish
         </button>
       </div>

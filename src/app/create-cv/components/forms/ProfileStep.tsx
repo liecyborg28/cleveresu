@@ -1,5 +1,3 @@
-/* eslint-disable react-hooks/exhaustive-deps */
-/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 import { useCallback, useEffect, useState } from "react";
@@ -8,7 +6,7 @@ import api from "@/lib/axios";
 import { Pencil, Check } from "lucide-react";
 import { toast } from "react-hot-toast";
 
-//helper debounce
+// helper debounce
 function useDebounce(callback: (...args: any[]) => void, delay: number) {
   const [timeoutId, setTimeoutId] = useState<NodeJS.Timeout | null>(null);
 
@@ -47,17 +45,14 @@ export default function ProfileStep({ onNext }: Props) {
     };
     fetchProfile();
   }, []);
-  // debounced patch to backend
+
   const debouncedSave = useDebounce(async (field: string, value: string) => {
     let fixValue: any = value;
     try {
       setSaving(true);
-      if (field === "birthdate") {
-        fixValue = new Date(value).toISOString();
-      }
+      if (field === "birthdate") fixValue = new Date(value).toISOString();
 
       await api.patch("/profile", { [field]: fixValue });
-
       toast.success("Saved");
     } catch {
       toast.error("Update failed");
@@ -70,16 +65,6 @@ export default function ProfileStep({ onNext }: Props) {
     cv.setProfile({ [field]: value });
     debouncedSave(field, value);
   };
-
-  // const handleUpdate = async (field: string, value: string) => {
-  //   cv.setProfile({ [field]: value });
-  //   try {
-  //     await api.patch("/profile", { [field]: value });
-  //     toast.success("Saved");
-  //   } catch {
-  //     toast.error("Update failed");
-  //   }
-  // };
 
   if (loading)
     return (
@@ -96,25 +81,26 @@ export default function ProfileStep({ onNext }: Props) {
         Personal <span className="text-blue-600">Information</span>
       </h1>
       <p className="text-gray-500 mb-8 text-sm">
-        Manage your work experience. Tap the{" "}
+        Manage your profile fields. Tap the{" "}
         <Pencil className="inline w-4 h-4 mx-1 text-blue-500" /> icon to edit.
       </p>
 
-      {/* === Profile Card === */}
       <div
         className={`border rounded-xl p-6 transition relative ${
           isEditing
             ? "border-blue-400 bg-blue-50"
             : "border-gray-200 bg-white hover:shadow-sm"
-        }`}>
-        {/* Header bar with edit toggle */}
+        }`}
+      >
+        {/* Header bar */}
         <div className="flex justify-between items-center mb-4">
           <h3 className="font-semibold text-gray-700 text-lg">
             Basic Information
           </h3>
           <button
             onClick={() => setIsEditing(!isEditing)}
-            className="p-2 rounded-full hover:bg-gray-100 active:scale-95 transition">
+            className="p-2 rounded-full hover:bg-gray-100 active:scale-95 transition"
+          >
             {isEditing ? (
               <Check className="w-5 h-5 text-blue-600" />
             ) : (
@@ -125,48 +111,82 @@ export default function ProfileStep({ onNext }: Props) {
 
         {/* Editable fields */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pb-6">
-          <input
-            type="text"
+          {/* Full Name */}
+          <div className="flex flex-col">
+            <label className="text-sm font-medium text-gray-600 mb-1">
+              Full Name
+            </label>
+            <input
+              type="text"
+              disabled={!isEditing}
+              value={profile.full_name || ""}
+              onChange={(e) => handleChange("full_name", e.target.value)}
+              className="editable-field"
+              placeholder="John Doe"
+            />
+          </div>
+
+          {/* Address */}
+          <div className="flex flex-col">
+            <label className="text-sm font-medium text-gray-600 mb-1">
+              Address
+            </label>
+            <input
+              type="text"
+              disabled={!isEditing}
+              value={profile.address || ""}
+              onChange={(e) => handleChange("address", e.target.value)}
+              className="editable-field"
+              placeholder="Jl. Sudirman No. 10"
+            />
+          </div>
+
+          {/* Gender */}
+          {/* <div className="flex flex-col">
+            <label className="text-sm font-medium text-gray-600 mb-1">
+              Gender
+            </label>
+            <select
+              disabled={!isEditing}
+              value={profile.gender || ""}
+              onChange={(e) => handleChange("gender", e.target.value)}
+              className="editable-field"
+            >
+              <option value="">Select gender</option>
+              <option value="male">Male</option>
+              <option value="female">Female</option>
+            </select>
+          </div> */}
+
+          {/* Birth Date */}
+          {/* <div className="flex flex-col">
+            <label className="text-sm font-medium text-gray-600 mb-1">
+              Birth Date
+            </label>
+            <input
+              type="date"
+              disabled={!isEditing}
+              value={profile.birthdate?.split("T")[0] || ""}
+              onChange={(e) => handleChange("birthdate", e.target.value)}
+              className="editable-field"
+            />
+          </div> */}
+        </div>
+
+        {/* Description */}
+        <div className="flex flex-col">
+          <label className="text-sm font-medium text-gray-600 mb-1">
+            Description
+          </label>
+          <textarea
             disabled={!isEditing}
-            value={profile.full_name || ""}
-            onChange={(e) => handleChange("full_name", e.target.value)}
-            placeholder="Full Name"
-            className="editable-field"
-          />
-          <input
-            type="text"
-            disabled={!isEditing}
-            value={profile.address || ""}
-            onChange={(e) => handleChange("address", e.target.value)}
-            placeholder="Address"
-            className="editable-field"
-          />
-          <select
-            disabled={!isEditing}
-            value={profile.gender || ""}
-            onChange={(e) => handleChange("gender", e.target.value)}
-            className="editable-field">
-            <option value="">Select Gender</option>
-            <option value="male">Male</option>
-            <option value="female">Female</option>
-          </select>
-          <input
-            type="date"
-            disabled={!isEditing}
-            value={profile.birthdate?.split("T")[0] || ""}
-            onChange={(e) => handleChange("birthdate", e.target.value)}
+            value={profile.desc || ""}
+            onChange={(e) => handleChange("desc", e.target.value)}
+            placeholder="Tell something about yourself..."
+            rows={3}
             className="editable-field"
           />
         </div>
-
-        <textarea
-          disabled={!isEditing}
-          value={profile.desc || ""}
-          onChange={(e) => handleChange("desc", e.target.value)}
-          placeholder="Description"
-          rows={3}
-          className="editable-field"
-        />
       </div>
 
       {/* Navigation */}
